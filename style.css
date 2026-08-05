@@ -1,0 +1,120 @@
+body {
+    margin:0;
+    background:#f7f5f0;
+    color:#111;
+    font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Helvetica Neue",
+    Arial;
+}
+
+
+header {
+
+padding:30px 25px;
+
+font-size:32px;
+
+font-weight:700;
+
+letter-spacing:-1px;
+
+}
+
+
+
+.card {
+
+background:white;
+
+border-radius:32px;
+
+padding:25px;
+
+margin:20px;
+
+box-shadow:
+0 15px 40px rgba(0,0,0,0.06);
+
+}
+
+
+
+.button {
+
+background:#111;
+
+color:white;
+
+border:none;
+
+padding:18px;
+
+border-radius:40px;
+
+width:100%;
+
+font-size:16px;
+
+}
+
+
+
+.hero {
+
+height:450px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-size:90px;
+
+}
+
+
+
+h1,h2 {
+
+letter-spacing:-0.5px;
+
+}
+
+
+
+.clothing {
+
+border-radius:30px;
+
+background:white;
+
+overflow:hidden;
+
+}
+
+
+
+.clothing img {
+
+width:100%;
+
+height:220px;
+
+object-fit:cover;
+
+}
+
+
+
+nav {
+
+background:white;
+
+height:75px;
+
+border-top:1px solid #ddd;
+
+}
