@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dressing IA</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+}
+
+body{
+margin:0;
+background:#f7f5f0;
+color:#111;
+}
+
+header{
+padding:25px;
+font-size:30px;
+font-weight:700;
+}
+
+nav{
+
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+
+height:70px;
+
+background:white;
+
+display:flex;
+justify-content:space-around;
+align-items:center;
+
+border-top:1px solid #ddd;
+
+}
+
+
+nav button{
+
+background:none;
+border:none;
+font-size:14px;
+
+}
+
+
+.page{
+
+display:none;
+padding:20px;
+padding-bottom:100px;
+
+}
+
+
+.active{
+display:block;
+}
+
+
+
+.card{
+
+background:white;
+border-radius:30px;
+padding:20px;
+margin-bottom:20px;
+
+box-shadow:
+0 10px 30px rgba(0,0,0,0.05);
+
+}
+
+
+.hero{
+
+height:420px;
+
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+
+font-size:60px;
+
+}
+
+
+.button{
+
+width:100%;
+padding:16px;
+
+border:none;
+border-radius:30px;
+
+background:#111;
+color:white;
+
+font-size:16px;
+
+}
+
+
+.grid{
+
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+
+}
+
+
+.clothing{
+
+background:white;
+border-radius:25px;
+padding:15px;
+
+}
+
+
+
+.clothing img{
+
+width:100%;
+height:180px;
+object-fit:cover;
+
+border-radius:20px;
+
+}
+
+
+input,select{
+
+width:100%;
+padding:15px;
+
+border-radius:20px;
+border:1px solid #ddd;
+
+margin-bottom:12px;
+
+}
+
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+
+<header>
+
+Dressing IA
+
+</header>
+
+
+
+
+<!-- ACCUEIL -->
+
+<section id="home" class="page active">
+
+
+<div class="card hero">
+
+👕
+
+🧥
+
+👖
+
+👟
+
+
+</div>
+
+
+
+<div class="card">
+
+
+<h2>
+✨ Inspiration du jour
+</h2>
+
+
+<p id="suggestion">
+
+Une tenue va bientôt apparaître...
+
+</p>
+
+
+<button class="button"
+onclick="generateOutfit()">
+
+Créer une tenue
+
+</button>
+
+
+</div>
+
+
+
+
+<div class="card">
+
+<h2>
+À redécouvrir
+</h2>
+
+
+<p>
+Ce pull pourrait créer 14 nouvelles tenues.
+</p>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+<!-- DRESSING -->
+
+
+<section id="dressing" class="page">
+
+
+<h1>
+Mon dressing
+</h1>
+
+
+<div id="clothes"
+class="grid">
+
+</div>
+
+
+
+<div class="card">
+
+
+<h2>
+Ajouter un vêtement
+</h2>
+
+
+<input 
+type="file"
+accept="image/*"
+id="photo">
+
+
+
+<input
+placeholder="Nom"
+id="name">
+
+
+
+<select id="type">
+
+<option>
+Haut
+</option>
+
+<option>
+Pantalon
+</option>
+
+<option>
+Chaussure
+</option>
+
+<option>
+Accessoire
+</option>
+
+
+</select>
+
+
+
+<input
+placeholder="Couleur"
+id="color">
+
+
+
+<button class="button"
+onclick="addClothing()">
+
+Ajouter
+
+</button>
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+<!-- CREATION -->
+
+
+<section id="create" class="page">
+
+
+<h1>
+✨ Créer
+</h1>
+
+
+<div class="card">
+
+
+<h2>
+Inspire-moi
+</h2>
+
+
+<p id="outfit">
+
+Clique pour générer une tenue.
+
+</p>
+
+
+
+<button class="button"
+onclick="generateOutfit()">
+
+✨ Générer
+
+</button>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+<nav>
+
+
+<button onclick="show('home')">
+
+🏠
+<br>
+Accueil
+
+</button>
+
+
+
+<button onclick="show('dressing')">
+
+👕
+
+<br>
+Dressing
+
+</button>
+
+
+
+<button onclick="show('create')">
+
+✨
+
+<br>
+Créer
+
+</button>
+
+
+</nav>
+
+
+
+
+
+<script>
+
+
+let clothes =
+JSON.parse(localStorage.getItem("clothes"))
+|| [];
+
+
+
+
+function show(page){
+
+
+document.querySelectorAll(".page")
+.forEach(p=>p.classList.remove("active"));
+
+
+document.getElementById(page)
+.classList.add("active");
+
+
+}
+
+
+
+
+
+function addClothing(){
+
+
+let file =
+document.getElementById("photo").files[0];
+
+
+let reader =
+new FileReader();
+
+
+
+reader.onload=function(e){
+
+
+let item={
+
+
+image:e.target.result,
+
+name:
+document.getElementById("name").value,
+
+
+type:
+document.getElementById("type").value,
+
+
+color:
+document.getElementById("color").value
+
+
+};
+
+
+
+clothes.push(item);
+
+
+localStorage.setItem(
+"clothes",
+JSON.stringify(clothes)
+);
+
+
+
+displayClothes();
+
+
+};
+
+
+
+if(file){
+
+reader.readAsDataURL(file);
+
+}
+
+
+
+}
+
+
+
+
+
+function displayClothes(){
+
+
+let container =
+document.getElementById("clothes");
+
+
+container.innerHTML="";
+
+
+
+clothes.forEach(c=>{
+
+
+container.innerHTML += `
+
+<div class="clothing">
+
+<img src="${c.image}">
+
+<h3>${c.name}</h3>
+
+<p>${c.type}</p>
+
+<p>${c.color}</p>
+
+
+</div>
+
+`;
+
+
+
+});
+
+
+}
+
+
+
+
+
+function generateOutfit(){
+
+
+if(clothes.length<3){
+
+document.getElementById("outfit").innerHTML=
+
+"Ajoute au moins 3 vêtements pour créer une tenue.";
+
+return;
+
+}
+
+
+
+let random =
+clothes.sort(()=>0.5-Math.random())
+.slice(0,3);
+
+
+
+let text="";
+
+
+random.forEach(c=>{
+
+text+=
+
+"👕 "
++c.name
++"<br>";
+
+});
+
+
+
+document.getElementById("outfit")
+.innerHTML=text;
+
+
+document.getElementById("suggestion")
+.innerHTML=text;
+
+
+}
+
+
+
+
+displayClothes();
+
+
+</script>
+
+
+</body>
+
+</html>
